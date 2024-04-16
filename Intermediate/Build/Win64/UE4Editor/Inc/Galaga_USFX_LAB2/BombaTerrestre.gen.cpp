@@ -50,8 +50,10 @@ void EmptyLinkFunctionForGeneratedCodeBombaTerrestre() {}
 	};
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ABombaTerrestre_Statics::Class_MetaDataParams[] = {
+		{ "Comment", "// Forward declaration para crear un componente de malla est?tica\n" },
 		{ "IncludePath", "BombaTerrestre.h" },
 		{ "ModuleRelativePath", "BombaTerrestre.h" },
+		{ "ToolTip", "Forward declaration para crear un componente de malla est?tica" },
 	};
 #endif
 #if WITH_METADATA
@@ -103,7 +105,7 @@ void EmptyLinkFunctionForGeneratedCodeBombaTerrestre() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(ABombaTerrestre, 3421614028);
+	IMPLEMENT_CLASS(ABombaTerrestre, 995292051);
 	template<> GALAGA_USFX_LAB2_API UClass* StaticClass<ABombaTerrestre>()
 	{
 		return ABombaTerrestre::StaticClass();

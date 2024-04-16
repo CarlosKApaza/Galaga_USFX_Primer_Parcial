@@ -7,7 +7,7 @@
 #include "BombaTerrestre.generated.h"
 
 
-class UStaticMeshComponent;
+class UStaticMeshComponent; // Forward declaration para crear un componente de malla estática
 
 UCLASS()
 class GALAGA_USFX_LAB2_API ABombaTerrestre : public AActor
@@ -15,7 +15,7 @@ class GALAGA_USFX_LAB2_API ABombaTerrestre : public AActor
 	GENERATED_BODY()
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = "true"))
-	UStaticMeshComponent* MallaBomba;
+	UStaticMeshComponent* MallaBomba; // Crear un componente de malla estática para la bomba
 	
 private:
 	FVector posicionBomba;

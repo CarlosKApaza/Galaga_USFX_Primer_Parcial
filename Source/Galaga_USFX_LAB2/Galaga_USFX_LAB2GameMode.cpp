@@ -47,7 +47,6 @@ void AGalaga_USFX_LAB2GameMode::BeginPlay()
 		for (int j = 0; j < 7; j++) { // Crear 10 naves de la clase NaveEnemigaTransporte
 			ubicacionNaveActual.Y += 180.0f; // Sumar 190 unidades a la coordenada Y en cada iteración (los espacios por naves)
 			ANaveEnemigaTransporte* NaveEnemigaTransporteActual = World->SpawnActor<ANaveEnemigaTransporte>(ubicacionNaveActual, rotacionNave);
-			//NaveEnemigaTransporteActual->SetNombre("Nave Enemiga Transporte" + FString::FromInt(j + 1));
 			TANavesEnemigas.Add(NaveEnemigaTransporteActual);
 			TMPosicionesNavesEnemigas.Add(NaveEnemigaTransporteActual, ubicacionNaveActual);
 		}
@@ -58,118 +57,56 @@ void AGalaga_USFX_LAB2GameMode::BeginPlay()
 		for (int k = 0; k < 7; k++) { // Crear 10 naves de la clase NaveEnemigaEspia
 			ubicacionNaveActual.Y += 180.0f; // Sumar 190 unidades a la coordenada Y en cada iteración (los espacios por naves)
 			ANaveEnemigaEspia* NaveEnemigaEspiaActual = World->SpawnActor<ANaveEnemigaEspia>(ubicacionNaveActual, rotacionNave);
-			//NaveEnemigaEspiaActual->SetNombre("Nave Enemiga Espia" + FString::FromInt(k + 1));
 			TANavesEnemigas.Add(NaveEnemigaEspiaActual);
 			TMPosicionesNavesEnemigas.Add(NaveEnemigaEspiaActual, ubicacionNaveActual);
 		}
 		
-		// Mostrar las posiciones de las naves enemigas cada segundo
-		/*GetWorldTimerManager().SetTimer(FTHVisualizacionPosicionesNavesEnemigas, this, &AGalaga_USFX_LAB2GameMode::MostrarPosicionesNavesEnemigas, 1.0f, true);*/
-
-		// Temporizador para eliminar enemigos aleatorios cada 10 segundos
-		//GetWorldTimerManager().SetTimer(FTHEliminarEnemigosAleatorios, this, &AGalaga_USFX_LAB2GameMode::EliminarEnemigosAleatoriamente, 5.0f, true, 5.0f);
-
-		// Temporizador para crear enemigos aleatorios después de 10 segundo
-		//GetWorldTimerManager().SetTimer(FTHCrearEnemigosAleatorios, this, &AGalaga_USFX_LAB2GameMode::CrearEnemigosAleatoriamente, 5.0f, true, 5.0f);
 
 		// Temporizador para lanzar bombas terrestres aleatorias después de 10 segundos
-		GetWorldTimerManager().SetTimer(FTHLanzarBombaTerrestreAleatorios, this, &AGalaga_USFX_LAB2GameMode::BombaTerrestreAleatoria, 4.0f, true);
-		// Configurar temporizador para detener todas las acciones después de 40 segundos
+		GetWorldTimerManager().SetTimer(FTHLanzarBombaTerrestreAleatorios, this, &AGalaga_USFX_LAB2GameMode::BombaTerrestreAleatoria, 6.0f, true);
+	
+		// Configurar temporizador para hacer explotar la bomba terrestre después de 40 segundos
+		GetWorldTimerManager().SetTimer(FTHExplotarBombaTerrestre, this, &AGalaga_USFX_LAB2GameMode::HacerExplotarBombaTerrestre, 8.0f, true, 8.0f);
 
-		GetWorldTimerManager().SetTimer(FTHExplotarBombaTerrestre, this, &AGalaga_USFX_LAB2GameMode::HacerExplotarBombaTerrestre, 5.0f, true, 5.0f);
-		GetWorldTimerManager().SetTimer(FTHEndGameActions, this, &AGalaga_USFX_LAB2GameMode::StopGameActions, 120.0f, false);
+		// Configurar temporizador para detener todas las acciones después de 120 segundos
+		GetWorldTimerManager().SetTimer(FTHLFinalizarAccinoes, this, &AGalaga_USFX_LAB2GameMode::FinalizarAccicones, 120.0f, false);
 
+		// Configurar temporizador para hacer explotar a la navejugador 
+		GetWorldTimerManager().SetTimer(FTHExplotarNaveJugador, this, &AGalaga_USFX_LAB2GameMode::DestruirNaveJugador, 10, false);
 
 	}
 }
 
-//void AGalaga_USFX_LAB2GameMode::EliminarEnemigosAleatoriamente()
-//{
-//	// Verificar si hay al menos dos enemigos para eliminar
-//	if (TANavesEnemigas.Num() >= 2)
-//	{
-//		// Eliminar dos enemigos aleatorios
-//		for (int i = 0; i < 2; i++)
-//		{
-//			int32 RandomIndex = FMath::RandRange(0, TANavesEnemigas.Num() - 1);
-//			ANaveEnemiga* NaveEnemigaAEliminar = TANavesEnemigas[RandomIndex];
-//			TANavesEnemigas.Remove(NaveEnemigaAEliminar);
-//			TMPosicionesNavesEnemigas.Remove(NaveEnemigaAEliminar);
-//			NaveEnemigaAEliminar->Destroy();
-//		}
-//	}
-//}
-
-//void AGalaga_USFX_LAB2GameMode::CrearEnemigosAleatoriamente()
-//{
-//	// Obtener el mundo
-//	UWorld* const World = GetWorld();
-//	if (World == nullptr)
-//	{
-//		return;
-//	}
-//
-//	// Lista de clases de naves enemigas disponibles
-//	TArray<TSubclassOf<ANaveEnemiga>> ClasesNavesEnemigas;
-//	ClasesNavesEnemigas.Add(ANaveEnemigaCaza::StaticClass());
-//	ClasesNavesEnemigas.Add(ANaveEnemigaTransporte::StaticClass());
-//	ClasesNavesEnemigas.Add(ANaveEnemigaEspia::StaticClass());
-//
-//	// Espacio deseado entre las naves en el eje Y
-//	float EspacioEntreNavesY = 100.0f;
-//
-//	// Posición Y inicial
-//	float PosicionY = -50.0f;
-//
-//	// Incremento en la posición Y para cada fila
-//	float IncrementoY = EspacioEntreNavesY * ClasesNavesEnemigas.Num();
-//
-//	// Crear tres nuevas naves enemigas aleatoriamente
-//	for (int i = 0; i < 6; i++)
-//	{
-//		// Obtener una posición aleatoria desde TMPosicionesNavesEnemigas
-//		int32 RandomIndex = FMath::RandRange(0, TMPosicionesNavesEnemigas.Num() - 1);
-//		auto It = TMPosicionesNavesEnemigas.CreateIterator();
-//		for (int32 Index = 0; Index < RandomIndex; ++Index)
-//		{
-//			++It;
-//		}
-//		FVector PosicionNaveNueva = It->Value;
-//
-//		// Ajustar la posición Y basada en el índice de iteración
-//		PosicionNaveNueva.Y = PosicionY + (i * IncrementoY);
-//
-//		// Obtener una clase de nave enemiga aleatoria
-//		int32 RandomClassIndex = FMath::RandRange(0, ClasesNavesEnemigas.Num() - 1);
-//		TSubclassOf<ANaveEnemiga> ClaseNaveEnemiga = ClasesNavesEnemigas[RandomClassIndex];
-//
-//		// Crear una nueva nave enemiga en la posición aleatoria
-//		if (ClaseNaveEnemiga)
-//		{
-//			ANaveEnemiga* NuevaNaveEnemiga = World->SpawnActor<ANaveEnemiga>(ClaseNaveEnemiga, PosicionNaveNueva, FRotator::ZeroRotator);
-//			if (NuevaNaveEnemiga)
-//			{
-//				// Agregar la nueva nave enemiga al mapa
-//				TMPosicionesNavesEnemigas.Add(NuevaNaveEnemiga, PosicionNaveNueva);
-//			}
-//		}
-//	}
-//}
-
-void AGalaga_USFX_LAB2GameMode::StopGameActions()
+void AGalaga_USFX_LAB2GameMode::FinalizarAccicones()
 {
 	// Detener todas las acciones
-	//GetWorldTimerManager().ClearTimer(FTHEliminarEnemigosAleatorios); // Detiene la eliminación de enemigos aleatorios después de 40 segundos
-	//GetWorldTimerManager().ClearTimer(FTHCrearEnemigosAleatorios); // Detiene la creación de enemigos aleatorios después de 40 segundos
 	GetWorldTimerManager().ClearTimer(FTHLanzarBombaTerrestreAleatorios); // Detiene el lanzamiento de bombas terrestres aleatorias después de 40 segundos
 	GetWorldTimerManager().ClearTimer(FTHExplotarBombaTerrestre); // Detiene la explosión de bombas terrestres después de 40 segundos
+	GetWorldTimerManager().ClearTimer(FTHExplotarNaveJugador);
 
 }
 
+void AGalaga_USFX_LAB2GameMode::DestruirNaveJugador()
+{
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController(); // se obtiene el controlador de la nave en el juego con GetFirstPlayerController()
+	if (PlayerController) // verificamos que no es un puntero nulo 
+	{
+		AGalaga_USFX_LAB2Pawn* Jugador = Cast<AGalaga_USFX_LAB2Pawn>(PlayerController->GetPawn()); //convertir el objeto GetPawn de Pawn a la clase Pawn que es la clase del jugador 
+		if (Jugador) // verificamos jugador que no es un puntero nulo 
+		{
+			// se obtiene que Jugador no es nulo 
+			Jugador->Destroy();
+		}
+	}
+}
+
+
 void AGalaga_USFX_LAB2GameMode::BombaTerrestreAleatoria()
 {
+	// Obtener el mundo actual
 	UWorld* const World = GetWorld();
-	if (World != nullptr && TANavesEnemigas.Num() > 0)
+	if (World != nullptr && TANavesEnemigas.Num() > 0) // Verificar si el mundo no es nulo y si hay naves enemigas mayor a 0
+		
 	{
 		// Array para almacenar las posiciones de todas las naves enemigas de diferentes tipos
 		TArray<FVector> PosicionesNavesDiferentesTipos;
@@ -177,24 +114,23 @@ void AGalaga_USFX_LAB2GameMode::BombaTerrestreAleatoria()
 		// Iterar sobre las naves enemigas y guardar las posiciones de diferentes tipos en el array
 		for (ANaveEnemiga* NaveEnemiga : TANavesEnemigas)
 		{
-			if (NaveEnemiga != nullptr)
+			if (NaveEnemiga != nullptr) // Verificar si la nave enemiga no es nula
 			{
-				// Verificar el tipo de la nave
-				if (ANaveEnemigaCaza* NaveCaza = Cast<ANaveEnemigaCaza>(NaveEnemiga))
-				{
-					PosicionesNavesDiferentesTipos.Add(NaveCaza->GetActorLocation());
+				// Verificar el tipo de la nave y hacemos la conversion
+				if (ANaveEnemigaCaza* NaveCaza = Cast<ANaveEnemigaCaza>(NaveEnemiga)) // Cast para hacer la convercion 
+				{ 
+					PosicionesNavesDiferentesTipos.Add(NaveCaza->GetActorLocation()); // Agregar la posición de la nave al array
 				}
-				else if (ANaveEnemigaEspia* NaveEspia = Cast<ANaveEnemigaEspia>(NaveEnemiga))
+				else if (ANaveEnemigaEspia* NaveEspia = Cast<ANaveEnemigaEspia>(NaveEnemiga)) // Verificar si la nave es de tipo NaveEnemigaEspia
 				{
-					PosicionesNavesDiferentesTipos.Add(NaveEspia->GetActorLocation());
+					PosicionesNavesDiferentesTipos.Add(NaveEspia->GetActorLocation()); // Agregar la posición de la nave al array
 				}
-				else if (ANaveEnemigaTransporte* NaveTransporte = Cast<ANaveEnemigaTransporte>(NaveEnemiga))
+				else if (ANaveEnemigaTransporte* NaveTransporte = Cast<ANaveEnemigaTransporte>(NaveEnemiga)) // Verificar si la nave es de tipo NaveEnemigaTransporte
 				{
-					PosicionesNavesDiferentesTipos.Add(NaveTransporte->GetActorLocation());
+					PosicionesNavesDiferentesTipos.Add(NaveTransporte->GetActorLocation()); // Agregar la posición de la nave al array
 				}
 			}
 		}
-
 		// Verificar si se encontraron posiciones de naves de diferentes tipos
 		if (PosicionesNavesDiferentesTipos.Num() > 0)
 		{
@@ -222,30 +158,31 @@ void AGalaga_USFX_LAB2GameMode::BombaTerrestreAleatoria()
 
 void AGalaga_USFX_LAB2GameMode::HacerExplotarBombaTerrestre()
 {
-	// Verificar si la bomba terrestre actual no es nula
+	// Verificamos si la referencia bomba terrestre actual no es nula
 	if (BombaTerrestreActual != nullptr)
 	{
-		// Obtener la ubicación de la bomba terrestre
+		// Obtenemos la ubicación de la bomba terrestre con el fin de aplicar el efecto de la explosión
 		FVector BombaLocation = BombaTerrestreActual->GetActorLocation();
 
-		// Iterar sobre las naves enemigas y destruir aquellas que estén dentro de un radio determinado de la bomba
-		for (ANaveEnemiga* NaveEnemiga : TANavesEnemigas)
+		// Iteramos sobre las naves enemigas y destruir aquellas que estén dentro de un radio determinado de la bomba
+		for (ANaveEnemiga* NaveEnemiga : TANavesEnemigas) // Iterar sobre todas las naves enemigas
 		{
-			if (NaveEnemiga != nullptr)
+			if (NaveEnemiga != nullptr) // Verificamos si la nave enemiga no es nula
 			{
-				// Obtener la ubicación de la nave enemiga
-				FVector NaveLocation = NaveEnemiga->GetActorLocation();
-				float Distance = FVector::Distance(BombaLocation, NaveLocation);
+				// Obtenemos la ubicación de la nave enemiga
+				FVector NaveLocation = NaveEnemiga->GetActorLocation(); // Obtenemos la ubicación de la nave enemiga
+				float Distance = FVector::Distance(BombaLocation, NaveLocation); // Calculamos la distancia entre la bomba y la nave
 
-				// Si la nave está dentro de un radio de explosión (por ejemplo, 500 unidades), destruirla
-				if (Distance <= 400.0f)
+				// Si la nave está dentro de un radio de explosión (por ejemplo, 400 unidades), destruirla
+				if (Distance <= 400.0f) // Verificamos si la distancia es menor o igual a 400 unidades
 				{
-					NaveEnemiga->Destroy();
+					NaveEnemiga->Destroy(); // Destruir la nave enemiga
 				}
 			}
 		}
 
 		// Una vez que se haya aplicado el efecto de la explosión, destruir la bomba terrestre
-		BombaTerrestreActual->Destroy();
+		BombaTerrestreActual->Destroy(); // Destruir la bomba terrestre
+		DestruirNaveJugador(); // destruimos la nave del jugador 
 	}
 }
